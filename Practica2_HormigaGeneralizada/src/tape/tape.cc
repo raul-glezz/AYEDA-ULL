@@ -17,6 +17,17 @@
 
 #include "tape.h"
 
+// Definición de los códigos ANSI para los colores
+#define RESET_ANSI    " \033[0m"
+#define WHITE_ANSI    "\033[47m"
+#define BLACK_ANSI    "\033[40m"
+#define RED_ANSI      "\033[41m"
+#define GREEN_ANSI    "\033[42m"
+#define BLUE_ANSI     "\033[44m"
+#define YELLOW_ANSI   "\033[43m"
+#define MAGENTA_ANSI  "\033[45m"
+#define CYAN_ANSI     "\033[46m"
+
 /**
  * @brief Constructor con tamaño y número de colores especificados.
  * @param[in] size_X: tamaño en X de la cinta.
@@ -108,15 +119,15 @@ bool Tape::isValidPosition(int x, int y) const {
  */
 std::string Tape::getColor(Color color) const {
   switch (color) {
-    case Color::WHITE:   return "\033[47m";
-    case Color::BLACK:   return "\033[40m";
-    case Color::RED:     return "\033[41m";
-    case Color::GREEN:   return "\033[42m";
-    case Color::BLUE:    return "\033[44m";
-    case Color::YELLOW:  return "\033[43m";
-    case Color::MAGENTA: return "\033[45m";
-    case Color::CYAN:    return "\033[46m";
-    default:             return "\033[47m";
+    case Color::WHITE:   return WHITE_ANSI;
+    case Color::BLACK:   return BLACK_ANSI;
+    case Color::RED:     return RED_ANSI;
+    case Color::GREEN:   return GREEN_ANSI;
+    case Color::BLUE:    return BLUE_ANSI;
+    case Color::YELLOW:  return YELLOW_ANSI;
+    case Color::MAGENTA: return MAGENTA_ANSI;
+    case Color::CYAN:    return CYAN_ANSI;
+    default:             return WHITE_ANSI;
   }
 }
 
@@ -137,7 +148,7 @@ void Tape::printCell(std::ostream& os, int x, int y) const {
   // Si es blanco, solo imprimimos un espacio sin color
   if (cell_color == Color::WHITE) { os << " "; } 
   // Para otros colores, mostramos el número del color con fondo de color
-  else { os << getColor(cell_color) << static_cast<int>(cell_color) << "\033[0m"; }
+  else { os << getColor(cell_color) << RESET_ANSI; }
 }
 
 /**

@@ -38,54 +38,7 @@ Simulator::Simulator(const std::string& filename) {
     throw std::runtime_error("Error: No se puede abrir el fichero: " + filename);
   }
   
-  // Línea 1: Tamaño de la cinta y número de colores
-  int size_X, size_Y, num_colors;
-  file >> size_X >> size_Y >> num_colors;
-  
-  // Creamos la cinta
-  tape_ = new Tape(size_X, size_Y, num_colors);
-  
-  // Consumimos el salto de línea después de la primera línea
-  file.ignore();
-  
-  // Línea 2: Tipo, posición y orientación de cada hormiga
-  std::string ants_line;
-  std::getline(file, ants_line);
-  
-  // Parseamos a las hormigas
-  std::stringstream ss(ants_line);
-  std::string ant_spec;
-  
-  while (std::getline(ss, ant_spec, ';')) {
-    // Eliminamos los espacios iniciales y finales
-    ant_spec.erase(0, ant_spec.find_first_not_of(" \t\n\r"));
-    ant_spec.erase(ant_spec.find_last_not_of(" \t\n\r") + 1);
-    
-    if (ant_spec.empty()) continue;
-    
-    // Parseamos: TIPO X Y DIRECCION
-    std::stringstream ant_ss(ant_spec);
-    std::string type;
-    int x, y;
-    std::string dir_symbol;
-    
-    ant_ss >> type >> x >> y >> dir_symbol;
-    
-    Direction direction = parseDirection(dir_symbol);
-    
-    // Creamos la hormiga del tipo especificado
-    Ant* ant = createAnt(type, x, y, direction);
-    if (ant) { ants_.push_back(ant); }
-  }
-  
-  // Líneas 3..n: Posición y color de las celdas no blancas
-  int x, y, color;
-  while (file >> x >> y >> color) {
-    if (tape_->isValidPosition(x, y)) {
-      tape_->setCell(x, y, color);
-    }
-  }
-  
+  file >> (*this);
   file.close();
 }
 
@@ -329,4 +282,62 @@ std::ostream& operator<<(std::ostream& os, const Simulator& simulator) {
   os << "+" << std::endl;
 
   return os;
+}
+
+/**
+ * @brief Sobrecarga del operador de extracción en flujo (>>) para la clase Simulator.
+ * @param[in,out] is: referencia al flujo de entrada (std::cin).
+ * @param[in] simulator: referencia al objeto Simulator que se actualizará con el estado leído.
+ * @return Referencia al flujo de entrada (std::cin).
+ */
+std::istream& operator>>(std::istream& is, Simulator& simulator) {
+  // Línea 1: Tamaño de la cinta y número de colores
+  int size_X, size_Y, num_colors;
+  is >> size_X >> size_Y >> num_colors;
+  
+  // Creamos la cinta
+  simulator.setTape(new Tape(size_X, size_Y, num_colors));
+  
+  // Consumimos el salto de línea después de la primera línea
+  is.ignore();
+  
+  // Línea 2: Tipo, posición y orientación de cada hormiga
+  std::string ants_line;
+  std::getline(is, ants_line);
+  
+  // Parseamos a las hormigas
+  std::stringstream ss(ants_line);
+  std::string ant_spec;
+  
+  while (std::getline(ss, ant_spec, ';')) {
+    // Eliminamos los espacios iniciales y finales
+    ant_spec.erase(0, ant_spec.find_first_not_of(" \t\n\r"));
+    ant_spec.erase(ant_spec.find_last_not_of(" \t\n\r") + 1);
+    
+    if (ant_spec.empty()) continue;
+    
+    // Parseamos: TIPO X Y DIRECCION
+    std::stringstream ant_ss(ant_spec);
+    std::string type;
+    int x, y;
+    std::string dir_symbol;
+    
+    ant_ss >> type >> x >> y >> dir_symbol;
+    
+    Direction direction = simulator.parseDirection(dir_symbol);
+    
+    // Creamos la hormiga del tipo especificado
+    Ant* ant = simulator.createAnt(type, x, y, direction);
+    if (ant) { simulator.addAnt(ant); }
+  }
+  
+  // Líneas 3..n: Posición y color de las celdas no blancas
+  int x, y, color;
+  while (is >> x >> y >> color) {
+    if (simulator.getTape()->isValidPosition(x, y)) {
+      simulator.getTape()->setCell(x, y, color);
+    }
+  }
+
+  return is;
 }

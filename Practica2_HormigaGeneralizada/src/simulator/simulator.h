@@ -35,6 +35,11 @@ class Simulator {
   Tape* getTape() const { return tape_; }
   /// Método para obtener el vector de hormigas
   const std::vector<Ant*>& getAnts() const { return ants_; }
+
+  /// Método para establecer la cinta de la simulación
+  void setTape(Tape* tape) { tape_ = tape; }
+  /// Método para agregar una hormiga a la simulación
+  void addAnt(Ant* ant) { ants_.push_back(ant); }
   
   /// Método que simula un paso de todas las hormigas
   void step();
@@ -45,6 +50,11 @@ class Simulator {
   /// Método que guarda el estado actual de la simulación en un fichero
   void saveState(const std::string&) const;
 
+  /// Método que crea una hormiga del tipo especificado
+  Ant* createAnt(const std::string&, int, int, Direction);
+  /// Método auxiliar para parsear la dirección desde un símbolo
+  Direction parseDirection(const std::string&) const;
+
  private:
   //-------ATRIBUTOS-------
   /// tape_: puntero a la cinta de la simulación
@@ -54,13 +64,11 @@ class Simulator {
   /// steps_: número de pasos realizados en la simulación
   int steps_;
 
-  //-------------------MÉTODOS PRIVADOS-------------------
+  //----MÉTODO PRIVADOS----
   /// Método que limpia la pantalla de la consola
   void clearScreen() const;
-  /// Método que crea una hormiga del tipo especificado
-  Ant* createAnt(const std::string&, int, int, Direction);
-  /// Método auxiliar para parsear la dirección desde un símbolo
-  Direction parseDirection(const std::string&) const;
 };
 /// Sobrecarga del operador de inserción en flujo (<<) para la clase Simulator
 std::ostream& operator<<(std::ostream&, const Simulator&);
+/// Sobrecarga del operador de extracción en flujo (>>) para la clase Simulator
+std::istream& operator>>(std::istream&, Simulator&);

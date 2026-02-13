@@ -182,11 +182,11 @@ class Ant {
 };
 
 // Clases derivadas
-class Ant_DI : public Ant {
+class AntDI : public Ant {
   void move() override { /* ... */ }
 };
 
-class Ant_DDII : public Ant {
+class AntDDII : public Ant {
   void move() override { /* ... */ }
 };
 ```
@@ -194,8 +194,8 @@ class Ant_DDII : public Ant {
 ### Polimorfismo Dinámico
 ```cpp
 std::vector<Ant*> ants;
-ants.push_back(new Ant_DI(x, y, dir, tape));
-ants.push_back(new Ant_DDII(x, y, dir, tape));
+ants.push_back(new AntDI(x, y, dir, tape));
+ants.push_back(new AntDDII(x, y, dir, tape));
 
 // Cada hormiga ejecuta su propio move()
 for (Ant* ant : ants) {
@@ -214,7 +214,7 @@ enum class Color : int {
 };
 
 // Uso seguro de tipos
-Color c = Color::RED;
+Color color = Color::RED;
 ```
 
 ## Visualización con ANSI

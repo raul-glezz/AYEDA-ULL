@@ -12,6 +12,9 @@
  */
 
 #include "ant.h"
+
+#define ANSI_RESET "\033[0m"
+
 /**
  * @brief Gira la hormiga 90 grados a la izquierda.
  */
@@ -117,7 +120,7 @@ std::ostream& operator<<(std::ostream& os, const Ant& ant) {
   }
   
   // Reseteamos el color para no afectar a la impresión de otros elementos
-  os << "\033[0m";
+  os << ANSI_RESET;
   
   return os;
 }

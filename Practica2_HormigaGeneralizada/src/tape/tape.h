@@ -75,5 +75,5 @@ class Tape {
   /// Método auxiliar para obtener el código ANSI de color
   std::string getColor(Color) const;
 };
-
+/// Sobrecarga del operador de extracción en flujo (>>) para la clase Tape
 std::istream& operator>>(std::istream&, Tape&);
