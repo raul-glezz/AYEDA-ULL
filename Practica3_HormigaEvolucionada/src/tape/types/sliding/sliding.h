@@ -14,6 +14,11 @@
 #pragma once
 
 #include "../../tape.h"
+#include "../../../sliding_vector/sliding_vector.h"
+
+// Definición de una matriz desplizante genérica 2D
+template <typename T>
+using SlidingMatrix = SlidingVector<SlidingVector<T>>;
 
 class TapeSliding : public Tape {
  public:
@@ -51,6 +56,8 @@ class TapeSliding : public Tape {
   int min_x_;
   /// min_y: tamaño en Y de la cinta
   int min_y_;
+  /// sliding_grid_: rejilla deslizante con indices logicos en ambos ejes
+  SlidingMatrix<Color> sliding_grid_;
 
   //----MÉTODOS----
   /// Método para expandir la cinta hacia la izquierda

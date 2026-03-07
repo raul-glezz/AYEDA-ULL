@@ -12,6 +12,7 @@
  */
 
 #include <fstream>
+#include <stdexcept>
 
 #include "sliding.h"
 
@@ -24,7 +25,8 @@
  * @param[in] number_colors Número de colores posibles para las celdas
  */
 TapeSliding::TapeSliding(int size_X, int size_Y, int number_colors) : 
-  Tape(size_X, size_Y, number_colors), min_x_(0), min_y_(0) {}
+  Tape(size_X, size_Y, number_colors), min_x_(0), min_y_(0),
+  sliding_grid_(0, size_Y - 1, SlidingVector<Color>(0, size_X - 1, Color::WHITE)) {}
 
 /**
  * @brief Método para obtener el valor de una celda.
@@ -37,7 +39,7 @@ int TapeSliding::getCell(int x, int y) const {
   if (!isValidPosition(x, y)) {
     throw std::out_of_range("Error: Posición fuera de los límites de la cinta deslizante");
   }
-  return static_cast<int>(grid_[y - min_y_][x - min_x_]);
+  return static_cast<int>(sliding_grid_[y][x]);
 }
 
 /**
@@ -54,7 +56,7 @@ void TapeSliding::setCell(int x, int y, int value) {
   // Asegurar que el valor esté en el rango válido
   value = value % number_colors_;
   if (value < 0) value += number_colors_;
-  grid_[y - min_y_][x - min_x_] = static_cast<Color>(value);
+  sliding_grid_[y][x] = static_cast<Color>(value);
 }
 
 /**
@@ -86,9 +88,8 @@ bool TapeSliding::applyBorder(int& new_x, int& new_y, int&) {
  * @return True si la posición es válida, false en caso contrario.
  */
 bool TapeSliding::isValidPosition(int x, int y) const {
-  int col = x - min_x_;
-  int row = y - min_y_;
-  return ((col >= 0) && (col < size_X_) && (row >= 0) && (row < size_Y_));
+  return (x >= min_x_ && x <= sliding_grid_[min_y_].maxIndex() &&
+          y >= min_y_ && y <= sliding_grid_.maxIndex());
 }
 
 /**
@@ -103,7 +104,7 @@ void TapeSliding::printCell(std::ostream& os, int x, int y) const {
     throw std::out_of_range("Error: Posición fuera de los límites de la cinta deslizante");
   }
   
-  Color cell_color = grid_[y - min_y_][x - min_x_];
+  Color cell_color = sliding_grid_[y][x];
   
   // Si es blanco, solo imprimimos un espacio sin color
   if (cell_color == Color::WHITE) { os << " "; } 
@@ -148,8 +149,10 @@ void TapeSliding::saveToFile(const std::string& filename, const std::vector<std:
   // Líneas 3..n: Posiciones y colores de las celdas no blancas
   for (int y = 0; y < size_Y_; y++) {
     for (int x = 0; x < size_X_; x++) {
-      if (grid_[y][x] != Color::WHITE) {
-        file << (x + min_x_) << " " << (y + min_y_) << " " << static_cast<int>(grid_[y][x]) << std::endl;
+      const int logical_x = x + min_x_;
+      const int logical_y = y + min_y_;
+      if (sliding_grid_[logical_y][logical_x] != Color::WHITE) {
+        file << logical_x << " " << logical_y << " " << static_cast<int>(sliding_grid_[logical_y][logical_x]) << std::endl;
       }
     }
   }
@@ -161,9 +164,8 @@ void TapeSliding::saveToFile(const std::string& filename, const std::vector<std:
  * @brief Método para expandir la cinta hacia la izquierda.
  */
 void TapeSliding::growLeft() {
-  // Añade una columna de blancos al inicio
-  for (auto& row : grid_) {
-    row.insert(row.begin(), Color::WHITE);
+  for (int y = sliding_grid_.minIndex(); y <= sliding_grid_.maxIndex(); ++y) {
+    sliding_grid_[y].pushFront(Color::WHITE);
   }
   min_x_--;
   size_X_++;
@@ -173,8 +175,8 @@ void TapeSliding::growLeft() {
  * @brief Método para expandir la cinta hacia la derecha.
  */
 void TapeSliding::growRight() {
-  for (auto& row : grid_) {
-    row.push_back(Color::WHITE);
+  for (int y = sliding_grid_.minIndex(); y <= sliding_grid_.maxIndex(); ++y) {
+    sliding_grid_[y].pushBack(Color::WHITE);
   }
   size_X_++;
 }
@@ -183,7 +185,7 @@ void TapeSliding::growRight() {
  * @brief Método para expandir la cinta hacia arriba.
  */
 void TapeSliding::growUp() {
-  grid_.insert(grid_.begin(), std::vector<Color>(size_X_, Color::WHITE));
+  sliding_grid_.pushFront(SlidingVector<Color>(min_x_, min_x_ + size_X_ - 1, Color::WHITE));
   min_y_--;
   size_Y_++;
 }
@@ -192,6 +194,6 @@ void TapeSliding::growUp() {
  * @brief Método para expandir la cinta hacia abajo.
  */
 void TapeSliding::growDown() {
-  grid_.push_back(std::vector<Color>(size_X_, Color::WHITE));
+  sliding_grid_.pushBack(SlidingVector<Color>(min_x_, min_x_ + size_X_ - 1, Color::WHITE));
   size_Y_++;
 }
