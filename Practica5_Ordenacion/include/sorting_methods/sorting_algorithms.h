@@ -193,6 +193,110 @@ void selectionSort(staticSequence<Key>& sequence, unsigned size, bool trace) {
   }
 }
 
+///-----------------------------------BUBBLE SORT-----------------------------------
+/**
+ * @brief Método para ordenar una secuencia de elementos mediante el algoritmo de ordenación BubbleSort.
+ * @param[in] sequence: secuencia estática de elementos a ordenar.
+ * @param[in] size: tamaño de la secuencia de elementos.
+ * @param[in] trace: booleano para activar el rastro de la secuencia.
+ */
+template <class Key>
+void bubbleSort(staticSequence<Key>& sequence, unsigned size, bool trace) {
+  if (size < 2) { return; }
+
+  for (unsigned i = 0; i < (size - 1); i++) {
+    bool swapped = false;
+
+    for (unsigned j = 0; j < (size - i - 1); j++) {
+      if (sequence[j] > sequence[j + 1]) {
+        Swap(sequence[j], sequence[j + 1]);
+        swapped = true;
+      }
+    }
+
+    if (trace) { std::cout << sequence.print() << std::endl; }
+    if (!swapped) { break; }
+  }
+}
+
+///-----------------------------------MERGE SORT-----------------------------------
+/**
+ * @brief Método auxiliar para fusionar dos subseciones ordenadas en MergeSort.
+ * @param[in] sequence: secuencia estática de elementos a ordenar.
+ * @param[in] auxiliary: secuencia auxiliar para la fusión.
+ * @param[in] left: índice inicial de la subseción izquierda.
+ * @param[in] middle: índice final de la subseción izquierda.
+ * @param[in] right: índice final de la subseción derecha.
+ */
+template <class Key>
+void merge(staticSequence<Key>& sequence, staticSequence<Key>& auxiliary, int left, int middle, int right) {
+  int i = left;
+  int j = (middle + 1);
+  int k = left;
+
+  while ((i <= middle) && (j <= right)) {
+    if (sequence[i] <= sequence[j]) {
+      auxiliary[k] = sequence[i];
+      i++;
+    }
+    else {
+      auxiliary[k] = sequence[j];
+      j++;
+    }
+    k++;
+  }
+
+  while (i <= middle) {
+    auxiliary[k] = sequence[i];
+    i++;
+    k++;
+  }
+
+  while (j <= right) {
+    auxiliary[k] = sequence[j];
+    j++;
+    k++;
+  }
+
+  for (int index = left; index <= right; index++) {
+    sequence[index] = auxiliary[index];
+  }
+}
+
+/**
+ * @brief Método recursivo para ordenar una secuencia de elementos mediante el algoritmo de ordenación MergeSort.
+ * @param[in] sequence: secuencia estática de elementos a ordenar.
+ * @param[in] auxiliary: secuencia auxiliar para la fusión.
+ * @param[in] left: índice inicial de la subsecuencia.
+ * @param[in] right: índice final de la subsecuencia.
+ * @param[in] trace: booleano para activar el rastro de la secuencia.
+ */
+template <class Key>
+void mergeSortRecursive(staticSequence<Key>& sequence, staticSequence<Key>& auxiliary, int left, int right, bool trace) {
+  if (left >= right) { return; }
+
+  int middle = left + ((right - left) / 2);
+  mergeSortRecursive(sequence, auxiliary, left, middle, trace);
+  mergeSortRecursive(sequence, auxiliary, (middle + 1), right, trace);
+  merge(sequence, auxiliary, left, middle, right);
+
+  if (trace) { std::cout << sequence.print() << std::endl; }
+}
+
+/**
+ * @brief Método para ordenar una secuencia de elementos mediante el algoritmo de ordenación MergeSort.
+ * @param[in] sequence: secuencia estática de elementos a ordenar.
+ * @param[in] size: tamaño de la secuencia de elementos.
+ * @param[in] trace: booleano para activar el rastro de la secuencia.
+ */
+template <class Key>
+void mergeSort(staticSequence<Key>& sequence, unsigned size, bool trace) {
+  if (size < 2) { return; }
+
+  staticSequence<Key> auxiliary(size);
+  mergeSortRecursive(sequence, auxiliary, 0, (size - 1), trace);
+}
+
 ///-----------------------------------RADIX SORT-----------------------------------
 /**
  * @brief Método auxiliar para la ordenación RadixSort.

@@ -17,7 +17,7 @@
 #include "sorting_algorithms.h"
 
 /**
- * @brief Clase abstracta HeapSort: tipo de dato para representar la ordenación por el mecanismo HeapSort
+ * @brief Clase HeapSort: tipo de dato para representar la ordenación por el mecanismo HeapSort
  */
 template <class Key>
 class HeapSort : public SortMethod<Key> {

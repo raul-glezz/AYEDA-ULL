@@ -17,7 +17,7 @@
 #include "sorting_algorithms.h"
 
 /**
- * @brief Clase abstracta QuickSort: tipo de dato para representar la ordenación por el mecanismo QuickSort
+ * @brief Clase QuickSort: tipo de dato para representar la ordenación por el mecanismo QuickSort
  */
 template <class Key>
 class QuickSort : public SortMethod<Key> {

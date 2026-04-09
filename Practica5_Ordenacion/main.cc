@@ -21,11 +21,13 @@
  * @param[in] argv: variable para recoger los argumentos por línea de comandos.
  */
 void Usage(char* argv[]) {
-  std::cout << "Modo de uso: " << argv[0] << " [-h | --help ] -size <tamaño de la secuencia> -ord <'selection'|'heap'|'quick'|'shell'|'radix'> -init <'manual'|'random'|'file' <fichero de entrada>> -trace <'y'|'n'>" << std::endl << std::endl;
+  std::cout << "Modo de uso: " << argv[0] << " [-h | --help ] -size <tamaño de la secuencia> -ord <'selection'|'bubble'|'merge'|'heap'|'quick'|'shell'|'radix'> -init <'manual'|'random'|'file' <fichero de entrada>> -trace <'y'|'n'>" << std::endl << std::endl;
   std::cout << "-h | --help: Muestra las instrucciones para el correcto funcionamiento del programa." << std::endl;
   std::cout << "-size <tamaño de la secuencia>: Con esta opción se indica el tamaño que tiene la secuencia donde se almacenan las llaves/claves." << std::endl;
-  std::cout << "-ord <'selection'|'heap'|'quick'|'shell'|'radix'>: Con esta opción se indica el algoritmo de ordenación que se va a utilizar." << std::endl;
+  std::cout << "-ord <'selection'|'bubble'|'merge'|'heap'|'quick'|'shell'|'radix'>: Con esta opción se indica el algoritmo de ordenación que se va a utilizar." << std::endl;
   std::cout << "\tOrdenación por selección ('selection'): se ordena la secuencia mediante el algoritmo de ordenación de selección." << std::endl;
+  std::cout << "\tOrdenación por burbuja ('bubble'): se ordena la secuencia mediante el algoritmo de ordenación por burbuja." << std::endl;
+  std::cout << "\tOrdenación por mezcla ('merge'): se ordena la secuencia mediante el algoritmo de ordenación por mezcla." << std::endl;
   std::cout << "\tOrdenación por montículo ('heap'): se ordena la secuencia mediante el algoritmo de ordenación de montículo." << std::endl;
   std::cout << "\tOrdenación rápida ('quick'): se ordena la secuencia mediante el algoritmo de ordenación rápida." << std::endl;
   std::cout << "\tOrdenación por shell ('shell'): se ordena la secuencia mediante el algoritmo de ordenación por shell." << std::endl;
@@ -87,6 +89,8 @@ staticSequence<Key> CommandLineArgs(int argc, char* argv[]) {
       }
 
       if (std::string(argv[i + 1]) == "selection") { sort_method = new SelectionSort<Key>(sequence, size, trace); }
+      else if (std::string(argv[i + 1]) == "bubble") { sort_method = new BubbleSort<Key>(sequence, size, trace); }
+      else if (std::string(argv[i + 1]) == "merge") { sort_method = new MergeSort<Key>(sequence, size, trace); }
       else if (std::string(argv[i + 1]) == "quick") { sort_method = new QuickSort<Key>(sequence, size, trace); }
       else if (std::string(argv[i + 1]) == "heap") { sort_method = new HeapSort<Key>(sequence, size, trace); }
       else if (std::string(argv[i + 1]) == "shell") { sort_method = new ShellSort<Key>(sequence, size, trace); }

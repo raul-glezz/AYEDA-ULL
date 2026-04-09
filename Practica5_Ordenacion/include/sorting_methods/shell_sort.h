@@ -17,7 +17,7 @@
 #include "sorting_algorithms.h"
 
 /**
- * @brief Clase abstracta ShellSort: tipo de dato para representar la ordenación por el mecanismo ShellSort
+ * @brief Clase ShellSort: tipo de dato para representar la ordenación por el mecanismo ShellSort
  */
 template <class Key>
 class ShellSort : public SortMethod<Key> {

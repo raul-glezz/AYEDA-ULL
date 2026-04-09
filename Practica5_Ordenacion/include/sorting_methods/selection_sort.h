@@ -16,7 +16,7 @@
 #include "sort_method.h"
 #include "sorting_algorithms.h"
 /**
- * @brief Clase abstracta SelectionSort: tipo de dato para representar la ordenación por el mecanismo SelectionSort
+ * @brief Clase SelectionSort: tipo de dato para representar la ordenación por el mecanismo SelectionSort
  */
 template <class Key>
 class SelectionSort : public SortMethod<Key> {
